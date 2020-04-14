@@ -29,7 +29,7 @@ class PrivateTagsAPITests(TestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.create_user('test@mytech.com','test1234')
-        self.client = APIClient
+        self.client = APIClient()
         self.client.force_authenticate(self.user)
 
     def test_retrieve_tags(self):
@@ -56,7 +56,7 @@ class PrivateTagsAPITests(TestCase):
         res = self.client.get(TAGS_URL)
 
         self.assertEqual(res.status_code,status.HTTP_200_OK)
-        self.assertEqual(len(res.data),1)
+        self.assertEqual(len(res.data),2)
         self.assertEqual(res.data[0]['name'],tag.name)
 
     def test_create_tag_successful(self):
@@ -76,4 +76,4 @@ class PrivateTagsAPITests(TestCase):
         payload = {'name':''}
         res = self.client.post(TAGS_URL,payload)
 
-        self.assertEqual(res.status_code, status.HEEP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

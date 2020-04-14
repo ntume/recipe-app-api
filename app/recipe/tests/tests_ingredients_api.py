@@ -23,7 +23,7 @@ class PublicIngredientAPITest(TestCase):
         self.assertEqual(res.status_code,status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateIngredientAPITest(self):
+class PrivateIngredientAPITest(TestCase):
     """test ingredients can be retrieved byu authorized user"""
 
     def setUp(self):
@@ -51,14 +51,14 @@ class PrivateIngredientAPITest(self):
         ingredient = Ingredient.objects.create(user=self.user,name='Onions')
 
         res = self.client.get(INGREDIENTS_URL)
-        self.assertEqual(res.status_code,stauts.HTTP_200_OK)
+        self.assertEqual(res.status_code,status.HTTP_200_OK)
         self.assertEqual(len(res.data),1)
-        self.assertEqual(res.dat[0]['name'],ingredient.name)
+        self.assertEqual(res.data[0]['name'],ingredient.name)
 
     def test_create_ingredient_successful(self):
         """test if ingredient created successfully"""
 
-        payload = {'name':'cabbage','user'}
+        payload = {'name':'cabbage','user':self.user}
         self.client.post(INGREDIENTS_URL,payload)
 
         exists = Ingredient.objects.filter(
@@ -66,11 +66,11 @@ class PrivateIngredientAPITest(self):
                name = payload['name'],
         ).exists()
 
-        slef.assertTrue(exists)
+        self.assertTrue(exists)
 
     def test_create_ingredient_invalid(self):
         """test ingredient vaid fails"""
 
         payload = {'name':''}
-        self.client.post(INGREDIENTS_URL,payload)
+        res = self.client.post(INGREDIENTS_URL,payload)
         self.assertEqual(res.status_code,status.HTTP_400_BAD_REQUEST)
